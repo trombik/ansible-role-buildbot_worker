@@ -3,5 +3,6 @@ __buildbot_worker_user: buildbot
 __buildbot_worker_group: buildbot
 __buildbot_worker_service: buildbot-worker
 __buildbot_worker_package: devel/py-buildbot-worker
+__buildbot_worker_extra_packages: []
 __buildbot_worker_root_dir: /usr/local/etc/buildbot_worker
 __buildbot_worker_conf_dir: "{{ __buildbot_worker_root_dir }}"
