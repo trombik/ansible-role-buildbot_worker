@@ -1,5 +1,6 @@
 ---
 galaxy_info:
+  role_name: buildbot_worker
   author: Tomoyuki Sakurai
   description: Configure buildbot worker
   company: N/A
