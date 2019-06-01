@@ -5,7 +5,13 @@
     name: "{{ buildbot_worker_package }}"
     state: present
 
+- name: Install buildbot_worker_extra_packages
+  pkgng:
+    name: "{{ buildbot_worker_extra_packages }}"
+    state: present
+
 - name: Create buildbot_worker_group
+  # XXX the port does not crate user
   group:
     name: "{{ buildbot_worker_group }}"
 
