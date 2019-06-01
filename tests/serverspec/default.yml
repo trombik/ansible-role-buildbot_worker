@@ -1,0 +1,6 @@
+---
+- hosts: localhost
+  roles:
+    - ansible-role-buildbot_worker
+  vars:
+    buildbot_worker_config: ""

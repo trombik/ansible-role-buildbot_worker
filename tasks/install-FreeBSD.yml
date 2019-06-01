@@ -1,0 +1,6 @@
+---
+
+- name: Install buildbot_worker
+  pkgng:
+    name: buildbot_worker
+    state: present

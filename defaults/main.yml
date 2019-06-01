@@ -1,0 +1,9 @@
+---
+buildbot_worker_user: buildbot_worker
+buildbot_worker_group: buildbot_worker
+buildbot_worker_log_dir: /var/log/buildbot_worker
+buildbot_worker_db_dir: "{{ __buildbot_worker_db_dir }}"
+buildbot_worker_service: buildbot_worker
+buildbot_worker_conf_dir: "{{ __buildbot_worker_conf_dir }}"
+buildbot_worker_conf_file: "{{ __buildbot_worker_conf_dir }}/buildbot_worker.conf"
+buildbot_worker_flags: ""

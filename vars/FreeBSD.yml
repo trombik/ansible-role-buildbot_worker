@@ -1,0 +1,3 @@
+---
+__buildbot_worker_db_dir: /var/db/buildbot_worker
+__buildbot_worker_conf_dir: /usr/local/etc/buildbot_worker

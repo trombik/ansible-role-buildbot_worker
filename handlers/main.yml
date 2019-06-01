@@ -1,0 +1,6 @@
+---
+
+- name: Restart buildbot_worker
+  service:
+    name: buildbot_worker
+    state: restarted
