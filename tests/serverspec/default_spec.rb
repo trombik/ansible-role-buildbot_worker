@@ -17,11 +17,11 @@ config  = "#{config_dir}/buildbot.tac"
 user    = "buildbot"
 group   = "buildbot"
 default_group = case os[:family]
-               when "freebsd"
-                 "wheel"
-               else
-                 "root"
-               end
+                when "freebsd"
+                  "wheel"
+                else
+                  "root"
+                end
 default_user = "root"
 
 describe package(package) do
