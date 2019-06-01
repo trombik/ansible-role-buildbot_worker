@@ -1,58 +1,60 @@
 require "spec_helper"
 require "serverspec"
 
-package = "buildbot_worker"
-service = "buildbot_worker"
-config  = "/etc/buildbot_worker/buildbot_worker.conf"
-user    = "buildbot_worker"
-group   = "buildbot_worker"
-ports   = [PORTS]
-log_dir = "/var/log/buildbot_worker"
-db_dir  = "/var/lib/buildbot_worker"
-
-case os[:family]
-when "freebsd"
-  config = "/usr/local/etc/buildbot_worker.conf"
-  db_dir = "/var/db/buildbot_worker"
-end
+package = case os[:family]
+          when "freebsd"
+            "devel/py-buildbot-worker"
+          end
+service = case os[:family]
+          when "freebsd"
+            "buildbot-worker"
+          end
+config_dir = case os[:family]
+             when "freebsd"
+               "/usr/local/etc/buildbot_worker"
+             end
+config  = "#{config_dir}/buildbot.tac"
+user    = "buildbot"
+group   = "buildbot"
+default_group = case os[:family]
+               when "freebsd"
+                 "wheel"
+               else
+                 "root"
+               end
+default_user = "root"
 
 describe package(package) do
   it { should be_installed }
 end
 
+describe file config_dir do
+  it { should be_directory }
+  it { should be_grouped_into group }
+  it { should be_owned_by user }
+  it { should be_mode 755 }
+end
 describe file(config) do
   it { should be_file }
-  its(:content) { should match Regexp.escape("buildbot_worker") }
-end
-
-describe file(log_dir) do
-  it { should exist }
-  it { should be_mode 755 }
-  it { should be_owned_by user }
-  it { should be_grouped_into group }
-end
-
-describe file(db_dir) do
-  it { should exist }
-  it { should be_mode 755 }
-  it { should be_owned_by user }
-  it { should be_grouped_into group }
+  it { should be_grouped_into user }
+  it { should be_owned_by group }
+  it { should be_mode 644 }
+  its(:content) { should match Regexp.escape("Managed by ansible") }
+  its(:content) { should match(/workername = 'test-worker'/) }
 end
 
 case os[:family]
 when "freebsd"
   describe file("/etc/rc.conf.d/buildbot_worker") do
     it { should be_file }
+    it { should be_grouped_into default_group }
+    it { should be_owned_by default_user }
+    it { should be_mode 644 }
+    its(:content) { should match Regexp.escape("Managed by ansible") }
   end
 end
 
 describe service(service) do
   it { should be_running }
   it { should be_enabled }
-end
-
-ports.each do |p|
-  describe port(p) do
-    it { should be_listening }
-  end
 end

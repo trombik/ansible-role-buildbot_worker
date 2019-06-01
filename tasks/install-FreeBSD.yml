@@ -2,5 +2,26 @@
 
 - name: Install buildbot_worker
   pkgng:
-    name: buildbot_worker
+    name: "{{ buildbot_worker_package }}"
     state: present
+
+- name: Create buildbot_worker_group
+  group:
+    name: "{{ buildbot_worker_group }}"
+
+- name: Create buildbot_worker_user
+  user:
+    name: "{{ buildbot_worker_user }}"
+    group: "{{ buildbot_worker_group }}"
+
+- name: Create buildbot_worker_flags file
+  template:
+    src: FreeBSD.rcd.j2
+    dest: "/etc/rc.conf.d/{{ buildbot_worker_service | regex_replace('-', '_') }}"
+    validate: sh -n %s
+  notify: Restart buildbot_worker
+
+- name: Enable buildbot_worker_service
+  service:
+    name: "{{ buildbot_worker_service }}"
+    enabled: yes

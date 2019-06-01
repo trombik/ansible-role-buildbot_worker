@@ -5,33 +5,34 @@
 
 - include: "install-{{ ansible_os_family }}.yml"
 
-- name: Create log directory
+- name: Create buildbot_worker_root_dir directory
   file:
-    path: "{{ buildbot_worker_log_dir }}"
+    path: "{{ buildbot_worker_root_dir }}"
     mode: 0755
     owner: "{{ buildbot_worker_user }}"
     group: "{{ buildbot_worker_group }}"
     state: directory
   notify: Restart buildbot_worker
 
-- name: Create db directory
+- name: Create buildbot_worker_conf_dir directory
   file:
-    path: "{{ buildbot_worker_db_dir }}"
+    path: "{{ buildbot_worker_conf_dir }}"
     mode: 0755
     owner: "{{ buildbot_worker_user }}"
     group: "{{ buildbot_worker_group }}"
     state: directory
   notify: Restart buildbot_worker
 
-- name: Create buildbot_worker.conf
+- name: Create buildbot_worker_conf_file
   template:
-    src: buildbot_worker.conf.j2
+    src: buildbot.tac.j2
     dest: "{{ buildbot_worker_conf_file }}"
-    validate: echo %s
+    owner: "{{ buildbot_worker_user }}"
+    group: "{{ buildbot_worker_group }}"
+    mode: 0644
   notify: Restart buildbot_worker
 
-- name: Start buildbot_worker
+- name: Start buildbot_worker_service
   service:
     name: "{{ buildbot_worker_service }}"
-    enabled: true
     state: started
