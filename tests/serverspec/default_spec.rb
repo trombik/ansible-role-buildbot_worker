@@ -15,7 +15,7 @@ service = case os[:family]
           end
 config_dir = case os[:family]
              when "freebsd"
-               "/usr/local/etc/buildbot_worker"
+               "/usr/local/buildbot_worker"
              when "ubuntu"
                "/var/lib/buildbot/workers/default"
              end
@@ -32,6 +32,12 @@ default_user = "root"
 
 describe package(package) do
   it { should be_installed }
+end
+
+describe user(user) do
+  it { should exist }
+  it { should belong_to_group group }
+  it { should have_home_directory config_dir }
 end
 
 describe file config_dir do

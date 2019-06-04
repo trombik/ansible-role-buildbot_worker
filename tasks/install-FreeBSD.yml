@@ -19,6 +19,7 @@
   user:
     name: "{{ buildbot_worker_user }}"
     group: "{{ buildbot_worker_group }}"
+    home: "{{ buildbot_worker_conf_dir }}"
 
 - name: Create buildbot_worker_flags file
   template:
