@@ -1,7 +1,8 @@
 ---
 # tasks file for ansible-role-buildbot_worker
 
-- include_vars: "{{ ansible_os_family }}.yml"
+- name: Include OS-specific variables
+  include_vars: "{{ ansible_os_family }}.yml"
 
 - include: "install-{{ ansible_os_family }}.yml"
 
