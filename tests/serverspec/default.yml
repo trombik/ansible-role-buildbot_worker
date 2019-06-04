@@ -3,7 +3,8 @@
   roles:
     - ansible-role-buildbot_worker
   vars:
-    buildbot_worker_flags_freebsd: ""
+    buildbot_worker_flags_freebsd: |
+      buildbot_worker_basedir="{{ buildbot_worker_conf_dir }}"
     buildbot_worker_flags_ubuntu: |
       WORKER_ENABLED[1]=1                    # 1-enabled, 0-disabled
       WORKER_NAME[1]="default"               # short name printed on start/stop
