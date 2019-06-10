@@ -6,24 +6,40 @@ package = case os[:family]
             "devel/py-buildbot-worker"
           when "ubuntu"
             "python3-buildbot-worker"
+          when "openbsd"
+            "buildbot-worker"
           end
 service = case os[:family]
           when "freebsd"
             "buildbot-worker"
           when "ubuntu"
             "buildbot-worker@default"
+          when "openbsd"
+            "buildbot_worker"
           end
 config_dir = case os[:family]
              when "freebsd"
                "/usr/local/buildbot_worker"
              when "ubuntu"
                "/var/lib/buildbot/workers/default"
+             when "openbsd"
+               "/var/buildslave"
              end
-config  = "#{config_dir}/buildbot.tac"
-user    = "buildbot"
-group   = "buildbot"
+config = "#{config_dir}/buildbot.tac"
+user = case os[:family]
+       when "openbsd"
+         "_buildslave"
+       else
+         "buildbot"
+       end
+group = case os[:family]
+        when "openbsd"
+          "_buildslave"
+        else
+          "buildbot"
+        end
 default_group = case os[:family]
-                when "freebsd"
+                when "freebsd", "openbsd"
                   "wheel"
                 else
                   "root"
