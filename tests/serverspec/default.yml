@@ -15,6 +15,7 @@
       WORKER_OPTIONS[1]=""                   # buildbot options
       WORKER_PREFIXCMD[1]=""                 # prefix command, i.e. nice, linux32, dchroot
 
+    # "
     buildbot_worker_flags: "{% if ansible_os_family == 'FreeBSD' %}{{ buildbot_worker_flags_freebsd }}{% elif ansible_os_family == 'Debian' %}{{ buildbot_worker_flags_ubuntu }}{% endif %}"
     buildbot_worker_config: |
       import os
