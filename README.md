@@ -46,6 +46,17 @@ None
 | `__buildbot_worker_root_dir` | `/usr/local/buildbot_worker` |
 | `__buildbot_worker_conf_dir` | `{{ __buildbot_worker_root_dir }}` |
 
+## OpenBSD
+
+| Variable | Default |
+|----------|---------|
+| `__buildbot_worker_user` | `_buildslave` |
+| `__buildbot_worker_group` | `_buildslave` |
+| `__buildbot_worker_service` | `buildbot_worker` |
+| `__buildbot_worker_package` | `buildbot-worker` |
+| `__buildbot_worker_extra_packages` | `[]` |
+| `__buildbot_worker_root_dir` | `/var/buildslave` |
+| `__buildbot_worker_conf_dir` | `{{ __buildbot_worker_root_dir }}` |
 
 # Dependencies
 
@@ -57,19 +68,29 @@ None
 ---
 - hosts: localhost
   roles:
+    - name: trombik.freebsd_pkg_repo
+      when: ansible_os_family == 'FreeBSD'
     - ansible-role-buildbot_worker
   vars:
-    buildbot_worker_flags_freebsd: |
-      buildbot_worker_basedir="{{ buildbot_worker_conf_dir }}"
-    buildbot_worker_flags_ubuntu: |
-      WORKER_ENABLED[1]=1                    # 1-enabled, 0-disabled
-      WORKER_NAME[1]="default"               # short name printed on start/stop
-      WORKER_USER[1]="buildbot"              # user to run worker as
-      WORKER_BASEDIR[1]="{{ buildbot_worker_conf_dir }}"  # basedir to worker (absolute path)
-      WORKER_OPTIONS[1]=""                   # buildbot options
-      WORKER_PREFIXCMD[1]=""                 # prefix command, i.e. nice, linux32, dchroot
+    os_buildbot_worker_flags:
+      FreeBSD: |
+        buildbot_worker_basedir="{{ buildbot_worker_conf_dir }}"
+      # "
+      Debian: |
+        #WORKER_RUNNER=/usr/bin/buildbot-worker
 
-    buildbot_worker_flags: "{% if ansible_os_family == 'FreeBSD' %}{{ buildbot_worker_flags_freebsd }}{% elif ansible_os_family == 'Debian' %}{{ buildbot_worker_flags_ubuntu }}{% endif %}"
+        # 'true|yes|1' values in WORKER_ENABLED to enable instance and 'false|no|0' to
+        # disable. Other values will be considered as syntax error.
+
+        WORKER_ENABLED[1]=1                    # 1-enabled, 0-disabled
+        WORKER_NAME[1]="default"               # short name printed on start/stop
+        WORKER_USER[1]="buildbot"              # user to run worker as
+        WORKER_BASEDIR[1]="{{ buildbot_worker_conf_dir }}"  # basedir to worker (absolute path)
+        WORKER_OPTIONS[1]=""                   # buildbot options
+        WORKER_PREFIXCMD[1]=""                 # prefix command, i.e. nice, linux32, dchroot
+    # "
+
+    buildbot_worker_flags: "{{ os_buildbot_worker_flags[ansible_os_family] | default('') }}"
     buildbot_worker_config: |
       import os
       from buildbot_worker.bot import Worker
@@ -105,6 +126,22 @@ None
                  numcpus=numcpus, allow_shutdown=allow_shutdown,
                  maxRetries=maxretries)
       s.setServiceParent(application)
+
+    # _______________________________________freebsd_pkg_repo
+    # use my own packages because ones in ports have been broken.
+    freebsd_pkg_repo:
+      FreeBSD:
+        enabled: "false"
+        state: present
+      # enable my own package repository, where the latest package is
+      # available
+      FreeBSD_devel:
+        enabled: "true"
+        state: present
+        url: "http://pkg.i.trombik.org/{{ ansible_distribution_version | regex_replace('\\.', '') }}{{ansible_architecture}}-default-default/"
+        mirror_type: http
+        signature_type: none
+        priority: 100
 ```
 
 # License

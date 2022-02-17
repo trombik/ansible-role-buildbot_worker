@@ -43,9 +43,13 @@ platforms:
       extra_vars:
         ansible_python_interpreter: '/usr/local/bin/python3'
 
-#  - name: ubuntu-18.04-amd64
-#    driver:
-#      box: trombik/ansible-ubuntu-18.04-amd64
+  - name: ubuntu-20.04-amd64
+    driver:
+      box: trombik/ansible-ubuntu-20.04-amd64
+      box_version: 20220209.0232
+    provisioner:
+      extra_vars:
+        ansible_python_interpreter: '/usr/bin/python3'
 
 suites:
   - name: default
