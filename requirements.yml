@@ -1,0 +1,4 @@
+---
+roles:
+  - name: trombik.freebsd_pkg_repo
+collections: []
