@@ -4,36 +4,37 @@
 - name: Include OS-specific variables
   include_vars: "{{ ansible_os_family }}.yml"
 
-- include: "install-{{ ansible_os_family }}.yml"
+- name: "Include install-{{ ansible_os_family }}.yml"
+  include: "install-{{ ansible_os_family }}.yml"
 
 - name: Create buildbot_worker_root_dir directory
-  file:
+  ansible.builtin.file:
     path: "{{ buildbot_worker_root_dir }}"
-    mode: 0755
+    mode: "0755"
     owner: "{{ buildbot_worker_user }}"
     group: "{{ buildbot_worker_group }}"
     state: directory
   notify: Restart buildbot_worker
 
 - name: Create buildbot_worker_conf_dir directory
-  file:
+  ansible.builtin.file:
     path: "{{ buildbot_worker_conf_dir }}"
-    mode: 0755
+    mode: "0755"
     owner: "{{ buildbot_worker_user }}"
     group: "{{ buildbot_worker_group }}"
     state: directory
   notify: Restart buildbot_worker
 
 - name: Create buildbot_worker_conf_file
-  template:
+  ansible.builtin.template:
     src: buildbot.tac.j2
     dest: "{{ buildbot_worker_conf_file }}"
     owner: "{{ buildbot_worker_user }}"
     group: "{{ buildbot_worker_group }}"
-    mode: 0644
+    mode: "0644"
   notify: Restart buildbot_worker
 
 - name: Start buildbot_worker_service
-  service:
+  ansible.builtin.service:
     name: "{{ buildbot_worker_service }}"
     state: started

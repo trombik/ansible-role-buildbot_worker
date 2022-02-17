@@ -1,16 +1,16 @@
 ---
 
 - name: Install buildbot_worker
-  openbsd_pkg:
+  community.general.openbsd_pkg:
     name: "{{ buildbot_worker_package }}"
     state: present
 
 - name: Install buildbot_worker_extra_packages
-  openbsd_pkg:
+  community.general.openbsd_pkg:
     name: "{{ buildbot_worker_extra_packages }}"
     state: present
 
 - name: Enable buildbot_worker_service
-  service:
+  ansible.builtin.service:
     name: "{{ buildbot_worker_service }}"
     enabled: yes
