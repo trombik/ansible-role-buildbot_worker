@@ -1,6 +1,8 @@
 ---
 - hosts: localhost
   roles:
+    - name: trombik.freebsd_pkg_repo
+      when: ansible_os_family == 'FreeBSD'
     - ansible-role-buildbot_worker
   vars:
     buildbot_worker_flags_freebsd: |
@@ -49,3 +51,19 @@
                  numcpus=numcpus, allow_shutdown=allow_shutdown,
                  maxRetries=maxretries)
       s.setServiceParent(application)
+
+    # _______________________________________freebsd_pkg_repo
+    # use my own packages because ones in ports have been broken.
+    freebsd_pkg_repo:
+      FreeBSD:
+        enabled: "false"
+        state: present
+      # enable my own package repository, where the latest package is
+      # available
+      FreeBSD_devel:
+        enabled: "true"
+        state: present
+        url: "http://pkg.i.trombik.org/{{ ansible_distribution_version | regex_replace('\\.', '') }}{{ansible_architecture}}-default-default/"
+        mirror_type: http
+        signature_type: none
+        priority: 100
