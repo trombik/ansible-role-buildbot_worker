@@ -4,14 +4,20 @@
     name: "{{ buildbot_worker_package }}"
     state: present
 
+- name: Install buildbot_worker_extra_packages
+  ansible.builtin.apt:
+    name: "{{ buildbot_worker_extra_packages }}"
+    state: present
+
 - name: Create /etc/default/buildbot-worker
   ansible.builtin.template:
     src: Debian.default.j2
     dest: /etc/default/buildbot-worker
     mode: "0644"
-  when: 1 == 0
+  notify:
+    - Restart buildbot_worker
 
 - name: Enable buildbot_worker_service
-  ansible.builtin..service:
+  ansible.builtin.service:
     name: "{{ buildbot_worker_service }}"
     enabled: yes

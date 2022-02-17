@@ -25,6 +25,12 @@ config_dir = case os[:family]
              when "openbsd"
                "/var/buildslave"
              end
+home_dir = case os[:family]
+           when "ubuntu"
+             "/var/lib/buildbot"
+           else
+             config_dir
+           end
 config = "#{config_dir}/buildbot.tac"
 user = case os[:family]
        when "openbsd"
@@ -53,7 +59,7 @@ end
 describe user(user) do
   it { should exist }
   it { should belong_to_group group }
-  it { should have_home_directory config_dir }
+  it { should have_home_directory home_dir }
 end
 
 describe file config_dir do

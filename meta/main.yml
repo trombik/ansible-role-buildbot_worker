@@ -13,6 +13,9 @@ galaxy_info:
     - name: OpenBSD
       versions:
         - 7.0
+    - name: Ubuntu
+      versions:
+        - focal
   galaxy_tags:
     - buildbot
     - ci
